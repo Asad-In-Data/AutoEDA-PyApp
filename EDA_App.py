@@ -34,7 +34,9 @@ if fileuploaded is not None:
     else:
         st.error("Unsupported file format. Please upload a CSV or Excel file.")
     st.subheader("Data Preview")
-    st.dataframe(df.head())  # Display the first few rows of the uploaded data
+    st.write("Slider to choose the number of rows to display")
+    value= st.slider("Number of rows to display", min_value=1, max_value=100, value=10)
+    st.dataframe(df.head(value))  # Display the first few rows of the uploaded data
     st.subheader("Data Summary")
     st.write(df.describe() if 'df' in locals() else "No data available. Please upload a file.")
     st.write("Data Shape:", df.shape)
@@ -76,8 +78,7 @@ if st.button("Run EDA"):
     st.write("Running EDA...")
     # Here you can add the code to run the EDA
 
-st.sidebar.write("You can also add a slider to choose the number of rows to display")
-st.sidebar.slider("Number of rows to display", min_value=1, max_value=100, value=10)
+
 st.sidebar.write("You can also add a checkbox to show/hide the data")
 st.sidebar.checkbox("Show Data", value=True)
 if st.sidebar.checkbox("Show Data"):
@@ -146,22 +147,49 @@ st.markdown("""
 col_link1, col_link2, col_link3 = st.columns(3)
 with col_link1:
     st.markdown(
-        '<a href="https://datz-asadanalyst.github.io/" target="_blank" style="text-decoration:none;">'
-        '<img src="https://img.icons8.com/ios-filled/32/4285F4/domain.png" style="vertical-align:middle; margin-right:8px;"/>'
-        '<span style="vertical-align:middle;">Website</span></a>',
+        '''
+        <div style="display: flex; justify-content: center;">
+            <a href="https://datz-asadanalyst.github.io/" target="_blank" style="text-decoration:none;">
+                <img src="https://img.icons8.com/ios-filled/32/4285F4/domain.png" style="vertical-align:middle; margin-right:8px;"/>
+                <span style="vertical-align:middle;">Website</span>
+            </a>
+        </div>
+        ''',
         unsafe_allow_html=True
     )
 with col_link2:
     st.markdown(
-        '<a href="https://www.linkedin.com/in/datz-asad-analyst56" target="_blank" style="text-decoration:none;">'
-        '<img src="https://img.icons8.com/ios-filled/32/0A66C2/linkedin.png" style="vertical-align:middle; margin-right:8px;"/>'
-        '<span style="vertical-align:middle;">LinkedIn</span></a>',
+        '''
+        <div style="display: flex; justify-content: center;">
+            <a href="https://www.linkedin.com/in/datz-asad-analyst56" target="_blank" style="text-decoration:none;">
+                <img src="https://img.icons8.com/ios-filled/32/FFD700/linkedin.png" style="vertical-align:middle; margin-right:8px;"/>
+                <span style="vertical-align:middle; color:#FFD700; font-weight:bold; font-size:18px;">LinkedIn</span>
+            </a>
+        </div>
+        ''',
         unsafe_allow_html=True
     )
 with col_link3:
-     st.markdown('<a href="https://github.com/Datz-AsadAnalyst" target="_blank" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/32/000000/github.png" style="vertical-align:middle; margin-right:8px;"/><span style="vertical-align:middle;">GitHub</span></a>', unsafe_allow_html=True)
+    st.markdown(
+        '''
+        <div style="display: flex; justify-content: center;">
+            <a href="https://github.com/Datz-AsadAnalyst" target="_blank" style="text-decoration:none;">
+                <img src="https://img.icons8.com/ios-filled/32/000000/github.png" style="vertical-align:middle; margin-right:8px;"/>
+                <span style="vertical-align:middle;">GitHub</span>
+            </a>
+        </div>
+        ''',
+        unsafe_allow_html=True
+    )
 
 st.markdown("---")  
-st.markdown("© 2023 EDA App. All rights reserved.") 
+st.markdown(""" 
+<div style="text-align: center;">
+    <div style="font-size: 16px; color: #888;">
+        <p>Made with ❤️ by Datz Asad Analyst</p>
+        <p> © 2023 EDA App. All rights reserved.</p>
+    </div>
+</div>
+""", unsafe_allow_html=True) 
 
-st.logo("logo.png", size= "Large")  # You can adjust the height value as needed
+st.logo("logo.png", size= "Large")  # Streamlit does not have st.logo; remove or replace with st.image if needed
