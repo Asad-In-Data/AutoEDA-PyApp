@@ -8,7 +8,7 @@ import numpy as np
 st.set_page_config(page_title="EDA App ", layout="wide",page_icon=":bar_chart:")
 st.title("Exporatory Data Analysis (EDA) App")
 st.sidebar.title("EDA App Sidebar")
-st.sidebar.write("This is the sidebar of the EDA App")
+st.sidebar.write("This is the sideb of the EDA App")
 st.sidebar.write("You can add more options here")   
 st.write("For example, you can add a file uploader to upload your data")
 fileuploaded= st.file_uploader("Upload your data file", type=["csv", "xlsx"])
@@ -16,12 +16,19 @@ if fileuploaded is not None:
     if fileuploaded.name.endswith('.csv'):
         df = pd.read_csv(fileuploaded)
         st.write("Data uploaded successfully!")
+        st.subheader("Data Preview")
+        st.write("Slider to choose the number of rows to display")
+        value= st.slider("Number of rows to display", min_value=1, max_value=100, value=10)
+        st.dataframe(df.head(value))
         st.write("Choose the type of EDA")
         EDA_type=st.selectbox("Select EDA Type", ["Descriptive", "Exploratory", "Visual"])
         if EDA_type == "Descriptive":
             st.write("Descriptive EDA selected. Displaying basic statistics and data types.")
-            st.write(df.describe())
+            st.subheader("Data Summary")
+            st.write(df.describe() if 'df' in locals() else "No data available. Please upload a file.")
             st.write("Data Types:", df.dtypes)
+            st.write("Data Shape:", df.shape)
+            st.write("Columns:", df.columns.tolist())
         elif EDA_type == "Exploratory":
             st.write("Exploratory EDA selected. Displaying unique values and missing values.")
             st.write("Unique Values:", df.nunique())
@@ -33,13 +40,8 @@ if fileuploaded is not None:
         df = pd.read_excel(fileuploaded)
     else:
         st.error("Unsupported file format. Please upload a CSV or Excel file.")
-    st.subheader("Data Preview")
-    st.write("Slider to choose the number of rows to display")
-    value= st.slider("Number of rows to display", min_value=1, max_value=100, value=10)
-    st.dataframe(df.head(value))  # Display the first few rows of the uploaded data
-    st.subheader("Data Summary")
-    st.write(df.describe() if 'df' in locals() else "No data available. Please upload a file.")
-    st.write("Data Shape:", df.shape)
+      # Display the first few rows of the uploaded data
+    st.subheader("Column Selection")
     columns= df.columns.tolist()
     selected_columns = st.selectbox("Select columns to display", options=columns, index=0)
     st.dataframe(df[selected_columns].head())  # Display selected columns
@@ -139,7 +141,8 @@ st.sidebar.download_button(
 st.markdown("""
 <div style="text-align: center;">
     <h3>Contact Us</h3>
-    <p>If you have any questions or feedback, please contact us at <a href="mailto:asadalich56@gmail.com">asadalich56@gmail.com</a></p>
+    <p>If you have any questions or feedback, please contact us at <a href="mailto:asadalich56@gmail.com">
+     <span style="vertical-align:middle; color:#C1A9A9; font-weight:bold; font-size:18px;">Contact</span> </a> </p>
 </div>
 <br>
 """, unsafe_allow_html=True)
@@ -150,8 +153,8 @@ with col_link1:
         '''
         <div style="display: flex; justify-content: center;">
             <a href="https://datz-asadanalyst.github.io/" target="_blank" style="text-decoration:none;">
-                <img src="https://img.icons8.com/ios-filled/32/4285F4/domain.png" style="vertical-align:middle; margin-right:8px;"/>
-                <span style="vertical-align:middle;">Website</span>
+                <img src="https://img.icons8.com/ios-filled/32/000000/domain.png" style="vertical-align:middle; margin-right:8px;"/>
+                <span style="vertical-align:middle; color:#00B8A9; font-weight:bold; font-size:18px;">Website</span>
             </a>
         </div>
         ''',
@@ -162,8 +165,8 @@ with col_link2:
         '''
         <div style="display: flex; justify-content: center;">
             <a href="https://www.linkedin.com/in/datz-asad-analyst56" target="_blank" style="text-decoration:none;">
-                <img src="https://img.icons8.com/ios-filled/32/FFD700/linkedin.png" style="vertical-align:middle; margin-right:8px;"/>
-                <span style="vertical-align:middle; color:#FFD700; font-weight:bold; font-size:18px;">LinkedIn</span>
+                <img src="https://img.icons8.com/ios-filled/32/000000/linkedin.png" style="vertical-align:middle; margin-right:8px;"/>
+                <span style="vertical-align:middle; color:#00B8A9; font-weight:bold; font-size:18px;">LinkedIn</span>
             </a>
         </div>
         ''',
@@ -175,7 +178,7 @@ with col_link3:
         <div style="display: flex; justify-content: center;">
             <a href="https://github.com/Datz-AsadAnalyst" target="_blank" style="text-decoration:none;">
                 <img src="https://img.icons8.com/ios-filled/32/000000/github.png" style="vertical-align:middle; margin-right:8px;"/>
-                <span style="vertical-align:middle;">GitHub</span>
+                <span style="vertical-align:middle;color:#00B8A9; font-weight:bold; font-size:18px;">GitHub</span>
             </a>
         </div>
         ''',
