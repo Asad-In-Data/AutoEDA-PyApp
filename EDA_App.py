@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 # from streamlit_extras.add_vertical_space import add_vertical_space
 # from streamlit_extras.badges import badges, get_badges
 # Uncomment the above imports if you have the streamlit_extras library installed
@@ -32,7 +35,40 @@ if fileuploaded is not None:
             st.write("Missing Values:", df.isnull().sum())
           elif EDA_type == "Visual":
             st.write("Visual EDA selected. Displaying plots and charts.")
-            st.bar_chart(df.select_dtypes(include=[np.number]).head())
+            st.subheader("Data Visualization")
+            st.write("Choose the type of Columns to visualize")
+            col_type = st.selectbox("Select Column Type", ["Numerical", "Categorical"])
+            st.write("Plot type")
+            plot_type = st.selectbox("Select Plot Type", ["Count Plot", "Bar Plot", "Violin Plot", "Box Plot"])
+            if col_type == "Numerical":
+              st.write("Displaying numerical columns")
+              numerical_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+              st.write("Numerical Columns:", numerical_cols)
+              x_axis = st.selectbox("Select X-axis for plot", options=numerical_cols)
+              y_axis = st.selectbox("Select Y-axis for plot", options=numerical_cols)
+            elif col_type == "Categorical":
+                st.write("Displaying categorical columns")
+                categorical_cols = df.select_dtypes(include=[object]).columns.tolist()
+                st.write("Categorical Columns:", categorical_cols)
+                x_axis = st.selectbox("Select X-axis for plot", options=categorical_cols)
+                y_axis = st.selectbox("Select Y-axis for plot", options=categorical_cols)
+                plot_categorical_cols(                    df,
+                    categorical_cols,
+                    target_col=y_axis,
+                    plot_type=plot_type.lower(),
+                    figsize=(6, 3),
+                    rotation=45,
+                    palette=None,
+                    show_labels=True,
+                    label_type='count'
+                )
+                if len(categorical_cols) > 0:
+                    for col in categorical_cols:
+                        sns.countplot(data=df, x=col)
+                        plt.title(f"Count Plot of {col}")
+                        st.pyplot(plt)
+                        plt.clf()
+
     elif fileuploaded.name.endswith('.xlsx'):
         df = pd.read_excel(fileuploaded)
     else:
@@ -53,15 +89,15 @@ if fileuploaded is not None:
         st.write("Filtered Data:")
         st.dataframe(filtered_df)
 
-        # st.subheader("Plots")
-        # x_axis = st.selectbox("Select X-axis for plot", options=columns)
-        # y_axis = st.selectbox("Select Y-axis for plot", options=columns)
-        # if x_axis and y_axis:
-        #     st.bar_chart(filtered_df[[x_axis, y_axis]].set_index(x_axis))
-        #     st.line_chart(filtered_df[[x_axis, y_axis]].set_index(x_axis))
-        #     st.area_chart(filtered_df[[x_axis, y_axis]].set_index(x_axis))
-        # else:
-        #     st.write("Please select valid columns for plotting.")   
+        st.subheader("Plots")
+        x_axis = st.selectbox("Select X-axis for plot", options=columns)
+        y_axis = st.selectbox("Select Y-axis for plot", options=columns)
+        if x_axis and y_axis:
+            st.bar_chart(filtered_df[[x_axis, y_axis]].set_index(x_axis))
+            st.line_chart(filtered_df[[x_axis, y_axis]].set_index(x_axis))
+            st.area_chart(filtered_df[[x_axis, y_axis]].set_index(x_axis))
+        else:
+            st.write("Please select valid columns for plotting.")   
 else:
     st.write("Please upload a data file to get started.")
 
@@ -134,3 +170,62 @@ st.markdown("""
 """, unsafe_allow_html=True) 
 
 st.logo("logo.png", size= "Large")  # Streamlit does not have st.logo; remove or replace with st.image if needed
+
+
+def plot_categorical_cols(
+    df,
+    categorical_cols,
+    target_col,
+    plot_type='countplot',
+    figsize=(6, 3),
+    rotation=45,
+    palette=None,
+    show_labels=False,
+    label_type='count'):
+    
+    for col in categorical_cols:
+        plt.figure(figsize=figsize)
+
+        if plot_type == 'countplot':
+            ax=sns.countplot(data=df, x=col, hue=target_col, palette=palette)
+
+        elif plot_type == 'barplot':
+            # barplot needs numeric y — here using value_counts
+            temp = df.groupby([col, target_col]).size().reset_index(name='count')
+            ax=sns.barplot(data=temp, x=col, y='count', hue=target_col, palette=palette)
+
+        elif plot_type == 'violinplot':
+            sns.violinplot(data=df, x=col, y=target_col, palette=palette)
+
+        elif plot_type == 'boxplot':
+            sns.boxplot(data=df, x=col, y=target_col, palette=palette)
+
+        else:
+            print(f"Plot type '{plot_type}' not supported.")
+            continue
+
+        if show_labels:
+            # For each bar
+            for p in ax.containers:
+                labels = []
+                for bar in p:
+                    height = bar.get_height()
+                    if height == 0:
+                        labels.append("")
+                        continue
+                    if label_type == 'count':
+                        labels.append(f'{int(height)}')
+                    elif label_type == 'percent':
+                        total = len(df)
+                        percent = 100 * height / total
+                        labels.append(f'{percent:.1f}%')
+                    else:
+                        labels.append(f'{int(height)}')
+
+                ax.bar_label(p, labels=labels, label_type='edge', padding=2,
+                             fontsize=8, color='black', weight='bold')
+        plt.title(f"{col} vs {target_col}",weight='bold',fontsize=13,color='black')
+        plt.xlabel(col,weight='bold')
+        plt.ylabel(target_col,weight='bold')
+        plt.xticks(rotation=rotation)
+        plt.tight_layout()
