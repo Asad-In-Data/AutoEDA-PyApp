@@ -76,7 +76,7 @@ Contributions and suggestions are welcome!
 ## Contact
 
 **Asad Analyst**  
-[GitHub @Datz-AsadAnalyst](https://github.com/Asad-In-Data)  
+[GitHub @Asad-In-data](https://github.com/Asad-In-Data)  
 Email: asadalich56@gmail.com
 
 ---
