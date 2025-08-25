@@ -226,8 +226,8 @@ st.markdown("---")
 st.markdown(""" 
 <div style="text-align: center;">
     <div style="font-size: 16px; color: #888;">
-        <p>Made with ❤️ by Datz Asad Analyst</p>
-        <p> © 2023 EDA App. All rights reserved.</p>
+        <p>Made with ❤️ by Asad In Data</p>
+        <p> © 2025 EDA App. All rights reserved.</p>
     </div>
 </div>
 """, unsafe_allow_html=True) 
